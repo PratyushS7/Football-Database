@@ -1,0 +1,64 @@
+{% extends "layout.html" %}
+{% block content %}
+
+ {% if current_user.is_authenticated %}
+ <h1>{{current_user.clubn}} players</h1></br>
+ {% for player in players.items %}
+
+ <article class="media content-section">
+   <div class="media-body">
+     <div class="article-metadata">
+       <img src="{{ url_for('static', filename='profile_pics/'+player.image_file) }}">
+      <h3>{{ player.name }}</h3>
+      <h5>Age: {{ player.age}}</h5>
+      <h5>Country: {{ player.country }}</h5>
+      <h5>Main position: {{ player.position  }}</h5>
+ <button type="button" class="btn btn-danger btn-sm m-1" data-toggle="modal" data-target="#deleteModal1">Remove</button>
+   </div>
+ </article>
+ <div class="modal fade" id="deleteModal1" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel1" aria-hidden="true">
+<div class="modal-dialog" role="document">
+<div class="modal-content">
+<div class="modal-header">
+  <h5 class="modal-title" id="deleteModalLabel1">Remove Player?</h5>
+  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<div class="modal-footer">
+  <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+  <form  action="{{url_for('remove_player',player_id=player.id)}}" method="POST">
+    <input type="submit" class="btn-danger" value="Delete">
+  </form>
+</div>
+</div>
+</div>
+</div>
+{% endfor %}
+ {% for page_num in players.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}
+    {% if page_num %}
+      {% if players.page == page_num %}
+        <a class="btn btn-info mb-4" href="{{ url_for('home', page=page_num) }}">{{ page_num }}</a>
+      {% else %}
+        <a class="btn btn-outline-info mb-4" href="{{ url_for('home', page=page_num) }}">{{ page_num }}</a>
+      {% endif %}
+    {% else %}
+      ...
+    {% endif %}
+  {% endfor %}
+
+ {% else %}
+  {% for club in details.items %}
+       <article class="media content-section">
+         <img class="rounded-circle article-img" src="{{ url_for('static', filename='profile_pics/'+club.image_file) }}">
+         <div class="media-body">
+           <div class="article-metadata">
+            <a class="mr-2" href="#"></a>
+
+     <h2><a class="article-title" href="#">{{ club.clubn }}</a></h2>
+        <p class="article-content"></p>
+         </div>
+       </article>
+  {% endfor %}
+  {% endif %}
+{% endblock content %}

@@ -1,0 +1,45 @@
+{% extends "layout.html" %}
+{% block content %}
+<div>
+<h2 class="account-heading">Managers of {{ current_user.clubn }}</h2></br>
+</div>
+{% for m in manager.items %}
+       <article class="media content-section">
+         <div class="media-body">
+           <img src="{{ url_for('static', filename='profile_pics/'+m.image_file) }}">
+           <h2>{{ m.name }}</h2>
+           <p class="article-content">{{ m.desc }}</p>
+             <button type="button" class="btn btn-danger btn-sm m-1" data-toggle="modal" data-target="#deleteModal">Remove</button>
+         </div>
+       </article>
+       <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="deleteModalLabel">Remove Manager?</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <form  action="{{url_for('delete_manager',manager_id=m.id)}}" method="POST">
+          <input type="submit" class="btn-danger" value="Delete">
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+   {% endfor %}
+   {% for page_num in manager.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}
+      {% if page_num %}
+        {% if manager.page == page_num %}
+          <a class="btn btn-info mb-4" href="{{ url_for('club_manager',club_id=club.id, page=page_num) }}">{{ page_num }}</a>
+        {% else %}
+          <a class="btn btn-outline-info mb-4" href="{{ url_for('club_manager',club_id=club.id, page=page_num) }}">{{ page_num }}</a>
+        {% endif %}
+      {% else %}
+        ...
+      {% endif %}
+    {% endfor %}
+{% endblock content %}
